@@ -37,6 +37,22 @@ const cloneBoard = (board: (ChessPiece | null)[][]): (ChessPiece | null)[][] => 
   return board.map(row => [...row]);
 };
 
+// Helper function to convert AI difficulty to search depth
+const difficultyToDepth = (difficulty: AIDifficulty): number => {
+  switch (difficulty) {
+    case AIDifficulty.EASY:
+      return 1;
+    case AIDifficulty.MEDIUM:
+      return 2;
+    case AIDifficulty.HARD:
+      return 3;
+    case AIDifficulty.EXPERT:
+      return 4;
+    default:
+      return 2; // Default to medium
+  }
+};
+
 // Create the game state store
 export const useGameState = create<GameState>((set, get) => ({
   board: cloneBoard(INITIAL_BOARD),
@@ -202,9 +218,11 @@ export const useGameState = create<GameState>((set, get) => ({
   makeAIMove: () => {
     const { board, currentPlayer, aiDifficulty } = get();
     
-    // Simple implementation - this will be expanded in chessEngine.ts
+    // Convert AI difficulty enum to a search depth number
+    const searchDepth = difficultyToDepth(aiDifficulty);
+    
     setTimeout(() => {
-      const aiMove = findBestMove(board, currentPlayer, aiDifficulty);
+      const aiMove = findBestMove(board, currentPlayer, searchDepth);
       if (aiMove) {
         get().movePiece(aiMove.from, aiMove.to);
       }
