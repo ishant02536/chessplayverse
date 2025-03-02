@@ -44,6 +44,26 @@ export enum GameStatus {
   DRAW = 'draw'
 }
 
+// Chess piece Unicode symbols
+export const PIECE_SYMBOLS = {
+  [PieceColor.WHITE]: {
+    [PieceType.PAWN]: '♙',
+    [PieceType.KNIGHT]: '♘',
+    [PieceType.BISHOP]: '♗',
+    [PieceType.ROOK]: '♖',
+    [PieceType.QUEEN]: '♕',
+    [PieceType.KING]: '♔'
+  },
+  [PieceColor.BLACK]: {
+    [PieceType.PAWN]: '♟',
+    [PieceType.KNIGHT]: '♞',
+    [PieceType.BISHOP]: '♝',
+    [PieceType.ROOK]: '♜',
+    [PieceType.QUEEN]: '♛',
+    [PieceType.KING]: '♚'
+  }
+};
+
 // Initial chess board setup
 export const INITIAL_BOARD = [
   // Row 0 (Black back row)

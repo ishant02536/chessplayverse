@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { GameMode, AIDifficulty } from '@/lib/constants';
 import { useGameState } from '@/lib/gameState';
 import { 
   User, 
-  Robot, 
+  Bot, 
   ChevronRight, 
   Globe,
   ArrowDown, 
@@ -88,7 +87,7 @@ const GameModes: React.FC<GameModesProps> = ({ onClose, onSelectMultiplayer }) =
       >
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-full bg-primary/10">
-            <Robot size={24} className="text-primary" />
+            <Bot size={24} className="text-primary" />
           </div>
           <div>
             <h3 className="font-medium">Computer</h3>
