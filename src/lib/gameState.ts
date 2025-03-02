@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { PieceColor, PieceType, GameMode, AIDifficulty, GameStatus, INITIAL_BOARD } from './constants';
 import { ChessPiece, Position, Move, getMoveNotation } from './chessPieces';
-import { getValidMoves, makeMove, isKingInCheck, isCheckmate, isDraw } from './chessEngine';
+import { getValidMoves, makeMove, isKingInCheck, isCheckmate, isDraw, findBestMove } from './chessEngine';
 
 interface GameState {
   board: (ChessPiece | null)[][];
@@ -112,22 +112,22 @@ export const useGameState = create<GameState>((set, get) => ({
     
     // Check if the move results in check or checkmate for the opponent
     const nextPlayer = currentPlayer === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
-    const isCheck = isKingInCheck(newBoard, nextPlayer);
-    const isCheckmate = isCheck && isCheckmate(newBoard, nextPlayer);
+    const isInCheck = isKingInCheck(newBoard, nextPlayer);
+    const isInCheckmate = isInCheck && isCheckmate(newBoard, nextPlayer);
     const gameIsDraw = isDraw(newBoard, nextPlayer);
     
     // Update game status
     let newStatus = GameStatus.ONGOING;
-    if (isCheckmate) {
+    if (isInCheckmate) {
       newStatus = GameStatus.CHECKMATE;
-    } else if (isCheck) {
+    } else if (isInCheck) {
       newStatus = GameStatus.CHECK;
     } else if (gameIsDraw) {
       newStatus = GameStatus.DRAW;
     }
     
     // Record the move
-    const moveNotation = getMoveNotation(move, board, isCheck, isCheckmate);
+    const moveNotation = getMoveNotation(move, board, isInCheck, isInCheckmate);
     
     // Update state
     set({
@@ -211,9 +211,3 @@ export const useGameState = create<GameState>((set, get) => ({
     }, 500);
   },
 }));
-
-// Placeholder function for AI move - will be implemented in chessEngine.ts
-function findBestMove(board: (ChessPiece | null)[][], player: PieceColor, difficulty: AIDifficulty): Move | null {
-  // This is just a placeholder - the actual implementation will be in chessEngine.ts
-  return null;
-}

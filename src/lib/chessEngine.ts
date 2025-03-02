@@ -432,9 +432,9 @@ function minimax(
             if (!result) continue;
             
             const { newBoard } = result;
-            const eval = minimax(newBoard, depth - 1, currentPlayer === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE, alpha, beta, false);
-            maxEval = Math.max(maxEval, eval);
-            alpha = Math.max(alpha, eval);
+            const evalScore = minimax(newBoard, depth - 1, currentPlayer === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE, alpha, beta, false);
+            maxEval = Math.max(maxEval, evalScore);
+            alpha = Math.max(alpha, evalScore);
             
             if (beta <= alpha) break; // Alpha-beta pruning
           }
@@ -458,9 +458,9 @@ function minimax(
             if (!result) continue;
             
             const { newBoard } = result;
-            const eval = minimax(newBoard, depth - 1, currentPlayer === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE, alpha, beta, true);
-            minEval = Math.min(minEval, eval);
-            beta = Math.min(beta, eval);
+            const evalScore = minimax(newBoard, depth - 1, currentPlayer === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE, alpha, beta, true);
+            minEval = Math.min(minEval, evalScore);
+            beta = Math.min(beta, evalScore);
             
             if (beta <= alpha) break; // Alpha-beta pruning
           }
