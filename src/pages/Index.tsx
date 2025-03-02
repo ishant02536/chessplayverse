@@ -115,6 +115,7 @@ const Index: React.FC = () => {
       {/* Footer */}
       <footer className="py-6 text-center text-sm text-muted-foreground">
         <p>Designed with elegance, built with precision</p>
+        <p className="mt-1 font-semibold">Made by Ishant</p>
       </footer>
 
       {/* Game mode dialog */}
