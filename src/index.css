@@ -133,6 +133,37 @@
   .glass-panel {
     @apply bg-white bg-opacity-20 backdrop-blur-md border border-white border-opacity-20 shadow-lg;
   }
+  
+  /* Animation for check notification */
+  @keyframes bounce-once {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+  
+  .animate-bounce-once {
+    animation: bounce-once 1s ease-in-out;
+  }
+  
+  /* Confetti animation for winning */
+  @keyframes confetti-fall {
+    0% {
+      transform: translateY(-100%) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+  
+  .confetti {
+    position: absolute;
+    animation: confetti-fall 4s ease-in-out forwards;
+  }
 }
 
 /* Smooth transitions for all elements */

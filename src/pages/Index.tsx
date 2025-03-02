@@ -38,18 +38,21 @@ const Index: React.FC = () => {
         title: "Check!",
         description: `${currentPlayer === PieceColor.WHITE ? "White" : "Black"} king is in check.`,
         variant: "destructive",
+        className: "animate-bounce-once"
       });
     } else if (status === GameStatus.CHECKMATE) {
       toast({
         title: "Checkmate!",
         description: `${currentPlayer === PieceColor.WHITE ? "Black" : "White"} wins the game.`,
         variant: "default",
+        className: "animate-scale-in"
       });
     } else if (status === GameStatus.DRAW) {
       toast({
         title: "Draw!",
         description: "The game has ended in a draw.",
         variant: "default",
+        className: "animate-fade-in"
       });
     }
   }, [status, currentPlayer, toast]);

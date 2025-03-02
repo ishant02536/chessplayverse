@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { BOARD_SIZE, FILES, PieceColor } from '@/lib/constants';
+import { BOARD_SIZE, FILES, PieceColor, GameStatus } from '@/lib/constants';
 import { Position } from '@/lib/chessPieces';
 import { useGameState } from '@/lib/gameState';
 import ChessPiece from './ChessPiece';
+import { Sparkles } from 'lucide-react';
 
 interface ChessBoardProps {
   flipped?: boolean;
@@ -16,6 +16,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ flipped = false }) => {
     validMoves,
     lastMove,
     currentPlayer,
+    status,
     selectPiece,
     movePiece,
     resetSelection
@@ -23,6 +24,8 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ flipped = false }) => {
 
   const boardRef = useRef<HTMLDivElement>(null);
   const [boardSize, setBoardSize] = useState(0);
+  const [showCheckAnimation, setShowCheckAnimation] = useState(false);
+  const [showWinAnimation, setShowWinAnimation] = useState(false);
 
   // Update board size on window resize
   useEffect(() => {
@@ -37,6 +40,19 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ flipped = false }) => {
     window.addEventListener('resize', updateBoardSize);
     return () => window.removeEventListener('resize', updateBoardSize);
   }, []);
+
+  // Show check animation when status changes to CHECK
+  useEffect(() => {
+    if (status === GameStatus.CHECK) {
+      setShowCheckAnimation(true);
+      const timer = setTimeout(() => {
+        setShowCheckAnimation(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else if (status === GameStatus.CHECKMATE) {
+      setShowWinAnimation(true);
+    }
+  }, [status]);
 
   // Handle click on a square
   const handleSquareClick = (row: number, col: number) => {
@@ -135,6 +151,50 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ flipped = false }) => {
     return squares;
   };
 
+  // Render animations based on current game state
+  const renderAnimations = () => {
+    if (showCheckAnimation) {
+      return (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div className="bg-red-500 bg-opacity-25 rounded-full animate-pulse p-16 flex items-center justify-center">
+            <span className="text-white text-4xl font-bold animate-bounce">CHECK!</span>
+          </div>
+        </div>
+      );
+    }
+    
+    if (showWinAnimation) {
+      return (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <Sparkles 
+                  key={i}
+                  className="absolute text-yellow-400 animate-fade-in"
+                  style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 2}s`,
+                    transform: `scale(${Math.random() * 2 + 1})`,
+                  }}
+                  size={24}
+                />
+              ))}
+            </div>
+            <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-8 py-4 rounded-lg shadow-lg animate-scale-in">
+              <h2 className="text-3xl font-bold text-center">
+                {currentPlayer === PieceColor.WHITE ? 'Black' : 'White'} Wins!
+              </h2>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
   return (
     <div 
       ref={boardRef}
@@ -147,6 +207,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ flipped = false }) => {
       }}
     >
       {renderBoard()}
+      {renderAnimations()}
     </div>
   );
 };
