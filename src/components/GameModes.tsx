@@ -1,100 +1,148 @@
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useGameState } from '@/lib/gameState';
 import { GameMode, AIDifficulty } from '@/lib/constants';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import { useGameState } from '@/lib/gameState';
+import { 
+  User, 
+  Robot, 
+  ChevronRight, 
+  Globe,
+  ArrowDown, 
+  ArrowUp
+} from 'lucide-react';
 
 interface GameModesProps {
   onClose: () => void;
+  onSelectMultiplayer?: () => void;
 }
 
-const GameModes: React.FC<GameModesProps> = ({ onClose }) => {
-  const { initGame, gameMode, aiDifficulty, setAIDifficulty } = useGameState();
-  const [selectedMode, setSelectedMode] = React.useState<GameMode>(gameMode);
-  const [selectedDifficulty, setSelectedDifficulty] = React.useState<AIDifficulty>(aiDifficulty);
-
-  const handleModeChange = (mode: GameMode) => {
-    setSelectedMode(mode);
-  };
-
-  const handleDifficultyChange = (difficulty: AIDifficulty) => {
-    setSelectedDifficulty(difficulty);
-  };
-
-  const handleStartGame = () => {
-    initGame(selectedMode, selectedDifficulty);
+const GameModes: React.FC<GameModesProps> = ({ onClose, onSelectMultiplayer }) => {
+  const { initGame, aiDifficulty, setAIDifficulty } = useGameState();
+  
+  const handleSelectMode = (mode: GameMode) => {
+    if (mode === GameMode.MULTIPLAYER && onSelectMultiplayer) {
+      onSelectMultiplayer();
+      return;
+    }
+    
+    initGame(mode, aiDifficulty);
     onClose();
   };
 
+  const handleAdjustDifficulty = (direction: 'up' | 'down') => {
+    const difficulties = [
+      AIDifficulty.EASY,
+      AIDifficulty.MEDIUM,
+      AIDifficulty.HARD,
+      AIDifficulty.EXPERT
+    ];
+    
+    const currentIndex = difficulties.indexOf(aiDifficulty);
+    let newIndex = currentIndex;
+    
+    if (direction === 'up' && currentIndex < difficulties.length - 1) {
+      newIndex = currentIndex + 1;
+    } else if (direction === 'down' && currentIndex > 0) {
+      newIndex = currentIndex - 1;
+    }
+    
+    setAIDifficulty(difficulties[newIndex]);
+  };
+
+  const getDifficultyText = () => {
+    switch (aiDifficulty) {
+      case AIDifficulty.EASY: return 'Easy';
+      case AIDifficulty.MEDIUM: return 'Medium';
+      case AIDifficulty.HARD: return 'Hard';
+      case AIDifficulty.EXPERT: return 'Expert';
+      default: return 'Medium';
+    }
+  };
+
   return (
-    <Card className="max-w-md w-full animate-scale-in shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-xl font-serif">Select Game Mode</CardTitle>
-        <CardDescription>Choose how you want to play</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <RadioGroup
-            value={selectedMode}
-            onValueChange={(value) => handleModeChange(value as GameMode)}
-            className="flex flex-col space-y-2"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value={GameMode.PLAYER_VS_PLAYER} id="player-vs-player" />
-              <Label htmlFor="player-vs-player" className="cursor-pointer">
-                Player vs Player (local)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value={GameMode.PLAYER_VS_AI} id="player-vs-ai" />
-              <Label htmlFor="player-vs-ai" className="cursor-pointer">
-                Player vs Computer
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        {selectedMode === GameMode.PLAYER_VS_AI && (
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Difficulty</Label>
-            <RadioGroup
-              value={selectedDifficulty}
-              onValueChange={(value) => handleDifficultyChange(value as AIDifficulty)}
-              className="flex flex-col space-y-2"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value={AIDifficulty.EASY} id="easy" />
-                <Label htmlFor="easy" className="cursor-pointer">Easy</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value={AIDifficulty.MEDIUM} id="medium" />
-                <Label htmlFor="medium" className="cursor-pointer">Medium</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value={AIDifficulty.HARD} id="hard" />
-                <Label htmlFor="hard" className="cursor-pointer">Hard</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value={AIDifficulty.EXPERT} id="expert" />
-                <Label htmlFor="expert" className="cursor-pointer">Expert</Label>
-              </div>
-            </RadioGroup>
+    <div className="game-modes flex flex-col gap-2 p-6 rounded-lg glass-panel bg-white/95 shadow-lg max-w-md w-full mx-auto">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Choose Game Mode</h2>
+      
+      {/* Player vs Player */}
+      <button
+        className="game-mode-button flex items-center justify-between p-4 rounded-lg bg-card hover:bg-accent transition-colors"
+        onClick={() => handleSelectMode(GameMode.PLAYER_VS_PLAYER)}
+      >
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-full bg-primary/10">
+            <User size={24} className="text-primary" />
           </div>
-        )}
-
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
+          <div>
+            <h3 className="font-medium">Local Play</h3>
+            <p className="text-sm text-muted-foreground">Play against a friend on this device</p>
+          </div>
+        </div>
+        <ChevronRight size={20} className="text-muted-foreground" />
+      </button>
+      
+      {/* Player vs AI */}
+      <button
+        className="game-mode-button flex items-center justify-between p-4 rounded-lg bg-card hover:bg-accent transition-colors"
+        onClick={() => handleSelectMode(GameMode.PLAYER_VS_AI)}
+      >
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-full bg-primary/10">
+            <Robot size={24} className="text-primary" />
+          </div>
+          <div>
+            <h3 className="font-medium">Computer</h3>
+            <p className="text-sm text-muted-foreground">Challenge the AI opponent</p>
+          </div>
+        </div>
+        <ChevronRight size={20} className="text-muted-foreground" />
+      </button>
+      
+      {/* Multiplayer */}
+      <button
+        className="game-mode-button flex items-center justify-between p-4 rounded-lg bg-card hover:bg-accent transition-colors"
+        onClick={() => handleSelectMode(GameMode.MULTIPLAYER)}
+      >
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-full bg-primary/10">
+            <Globe size={24} className="text-primary" />
+          </div>
+          <div>
+            <h3 className="font-medium">Online Multiplayer</h3>
+            <p className="text-sm text-muted-foreground">Play against a friend online</p>
+          </div>
+        </div>
+        <ChevronRight size={20} className="text-muted-foreground" />
+      </button>
+      
+      {/* AI Difficulty */}
+      <div className="mt-4 p-4 rounded-lg bg-card">
+        <h3 className="text-sm font-medium mb-3">AI Difficulty</h3>
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleAdjustDifficulty('down')}
+            disabled={aiDifficulty === AIDifficulty.EASY}
+          >
+            <ArrowDown size={16} />
           </Button>
-          <Button onClick={handleStartGame}>
-            Start Game
+          
+          <div className="text-center px-4 font-medium">
+            {getDifficultyText()}
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleAdjustDifficulty('up')}
+            disabled={aiDifficulty === AIDifficulty.EXPERT}
+          >
+            <ArrowUp size={16} />
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

@@ -1,7 +1,15 @@
 
-// Board dimensions
+// Board size
 export const BOARD_SIZE = 8;
-export const SQUARE_SIZE = 64; // in pixels, will be responsive
+
+// Chess files (columns)
+export const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+// Piece colors
+export enum PieceColor {
+  WHITE = 'white',
+  BLACK = 'black'
+}
 
 // Piece types
 export enum PieceType {
@@ -10,19 +18,14 @@ export enum PieceType {
   BISHOP = 'bishop',
   ROOK = 'rook',
   QUEEN = 'queen',
-  KING = 'king',
-}
-
-// Piece colors
-export enum PieceColor {
-  WHITE = 'white',
-  BLACK = 'black',
+  KING = 'king'
 }
 
 // Game modes
 export enum GameMode {
-  PLAYER_VS_PLAYER = 'player-vs-player',
-  PLAYER_VS_AI = 'player-vs-ai',
+  PLAYER_VS_PLAYER = 'player_vs_player',
+  PLAYER_VS_AI = 'player_vs_ai',
+  MULTIPLAYER = 'multiplayer'
 }
 
 // AI difficulty levels
@@ -30,7 +33,7 @@ export enum AIDifficulty {
   EASY = 'easy',
   MEDIUM = 'medium',
   HARD = 'hard',
-  EXPERT = 'expert',
+  EXPERT = 'expert'
 }
 
 // Game status
@@ -38,16 +41,12 @@ export enum GameStatus {
   ONGOING = 'ongoing',
   CHECK = 'check',
   CHECKMATE = 'checkmate',
-  STALEMATE = 'stalemate',
-  DRAW = 'draw',
+  DRAW = 'draw'
 }
 
-// Chess notation for files (columns)
-export const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-
-// Initial board setup - used to reset the game
+// Initial chess board setup
 export const INITIAL_BOARD = [
-  // Row 8 (index 0)
+  // Row 0 (Black back row)
   [
     { type: PieceType.ROOK, color: PieceColor.BLACK },
     { type: PieceType.KNIGHT, color: PieceColor.BLACK },
@@ -56,18 +55,36 @@ export const INITIAL_BOARD = [
     { type: PieceType.KING, color: PieceColor.BLACK },
     { type: PieceType.BISHOP, color: PieceColor.BLACK },
     { type: PieceType.KNIGHT, color: PieceColor.BLACK },
-    { type: PieceType.ROOK, color: PieceColor.BLACK },
+    { type: PieceType.ROOK, color: PieceColor.BLACK }
   ],
-  // Row 7 (index 1)
-  Array(8).fill({ type: PieceType.PAWN, color: PieceColor.BLACK }),
-  // Rows 6-3 (indices 2-5)
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  // Row 2 (index 6)
-  Array(8).fill({ type: PieceType.PAWN, color: PieceColor.WHITE }),
-  // Row 1 (index 7)
+  // Row 1 (Black pawns)
+  [
+    { type: PieceType.PAWN, color: PieceColor.BLACK },
+    { type: PieceType.PAWN, color: PieceColor.BLACK },
+    { type: PieceType.PAWN, color: PieceColor.BLACK },
+    { type: PieceType.PAWN, color: PieceColor.BLACK },
+    { type: PieceType.PAWN, color: PieceColor.BLACK },
+    { type: PieceType.PAWN, color: PieceColor.BLACK },
+    { type: PieceType.PAWN, color: PieceColor.BLACK },
+    { type: PieceType.PAWN, color: PieceColor.BLACK }
+  ],
+  // Rows 2-5 (Empty squares)
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  // Row 6 (White pawns)
+  [
+    { type: PieceType.PAWN, color: PieceColor.WHITE },
+    { type: PieceType.PAWN, color: PieceColor.WHITE },
+    { type: PieceType.PAWN, color: PieceColor.WHITE },
+    { type: PieceType.PAWN, color: PieceColor.WHITE },
+    { type: PieceType.PAWN, color: PieceColor.WHITE },
+    { type: PieceType.PAWN, color: PieceColor.WHITE },
+    { type: PieceType.PAWN, color: PieceColor.WHITE },
+    { type: PieceType.PAWN, color: PieceColor.WHITE }
+  ],
+  // Row 7 (White back row)
   [
     { type: PieceType.ROOK, color: PieceColor.WHITE },
     { type: PieceType.KNIGHT, color: PieceColor.WHITE },
@@ -76,26 +93,6 @@ export const INITIAL_BOARD = [
     { type: PieceType.KING, color: PieceColor.WHITE },
     { type: PieceType.BISHOP, color: PieceColor.WHITE },
     { type: PieceType.KNIGHT, color: PieceColor.WHITE },
-    { type: PieceType.ROOK, color: PieceColor.WHITE },
-  ],
+    { type: PieceType.ROOK, color: PieceColor.WHITE }
+  ]
 ];
-
-// Chess piece unicode symbols
-export const PIECE_SYMBOLS = {
-  [PieceColor.WHITE]: {
-    [PieceType.KING]: '♔',
-    [PieceType.QUEEN]: '♕',
-    [PieceType.ROOK]: '♖',
-    [PieceType.BISHOP]: '♗',
-    [PieceType.KNIGHT]: '♘',
-    [PieceType.PAWN]: '♙',
-  },
-  [PieceColor.BLACK]: {
-    [PieceType.KING]: '♚',
-    [PieceType.QUEEN]: '♛',
-    [PieceType.ROOK]: '♜',
-    [PieceType.BISHOP]: '♝',
-    [PieceType.KNIGHT]: '♞',
-    [PieceType.PAWN]: '♟',
-  },
-};
